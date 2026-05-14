@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BooksWorld Order History</title>
+  <style>
+    body { margin: 0; min-height: 100vh; background: radial-gradient(circle at top, #0a172b, #071126 55%, #02040b 100%); color: #eef2ff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .navbar-container {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 110px;
+    }
+    .navbar {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: white;
+      text-decoration: none;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    nav a {
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      font-size: 0.95rem;
+    }
+    nav a:hover {
+      background: rgba(255,255,255,0.28);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    @media (max-width: 768px) {
+      .navbar { flex-direction: column; }
+      nav { width: 100%; justify-content: center; }
+    }
+    .back-button { position: absolute; top: 110px; left: 20px; background: linear-gradient(135deg, #38bdf8, #4f46e5); color: white; border: none; border-radius: 999px; padding: 10px 20px; cursor: pointer; font-weight: 700; transition: transform 0.2s ease, box-shadow 0.2s ease; z-index: 50; font-size: 0.9rem; }
+    .back-button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3); }
+    .page { position: relative; min-height: 100vh; padding: 24px; }
+    h2 { text-align: center; margin-bottom: 16px; font-size: 2.6rem; color: #eff6ff; }
+    .order-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); border-radius: 24px; padding: 24px; margin: 20px 0; box-shadow: 0 22px 50px rgba(0,0,0,0.24); }
+    .order-card h3 { margin: 0 0 14px; color: #bbdefb; }
+    .order-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 18px; }
+    .order-meta p { margin: 6px 0; line-height: 1.65; color: #dbeafe; }
+    table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+    th, td { padding: 14px; border: 1px solid rgba(255,255,255,0.14); color: #e2e8f0; text-align: left; }
+    th { background: rgba(99,102,241,0.35); }
+    .empty { text-align: center; margin-top: 60px; font-size: 1.15rem; color: #cbd5e1; }
+    .link-button { display: inline-block; margin-top: 18px; padding: 12px 26px; border-radius: 999px; text-decoration: none; background: #38bdf8; color: #020617; font-weight: 700; transition: transform 0.2s ease; }
+    .link-button:hover { transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+  <div class="navbar-container">
+    <div class="navbar">
+      <a href="home.html" class="logo">📚 BooksWorld</a>
+      <nav>
+        <a href="shop.html">🛍️ Shop</a>
+        <a href="cart.html">🛒 Cart</a>
+        <a href="orders.html">📦 Orders</a>
+        <a href="profile.html">👤 Profile</a>
+      </nav>
+    </div>
+  </div>
+  <button class="back-button" onclick="goBack()">← Back</button>
+  <div class="page">
+    <h2>Your Order History</h2>
+    <div id="ordersContainer"></div>
+  </div>
+  <script>
+    function renderOrders() {
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      const container = document.getElementById('ordersContainer');
+      if (orders.length === 0) {
+        container.innerHTML = `<p class="empty">No orders yet. <a class="link-button" href="home.html">Return to Home</a></p>`;
+        return;
+      }
+      orders.slice().reverse().forEach(order => {
+        const orderDiv = document.createElement('div');
+        orderDiv.className = 'order-card';
+        orderDiv.innerHTML = `
+          <h3>Order #${order.id}</h3>
+          <div class="order-meta">
+            <p><strong>Date:</strong> ${order.date}</p>
+            <p><strong>Total:</strong> ₹${order.total.toFixed(2)}</p>
+            <p><strong>Payment:</strong> ${order.payment}</p>
+            <p><strong>Shipping:</strong> ${order.shipping.address}, ${order.shipping.city} - ${order.shipping.zip}</p>
+          </div>
+          <table>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Publisher</th>
+              <th>Price</th>
+            </tr>
+            ${order.items.map(item => `
+              <tr>
+                <td>${item.title}</td>
+                <td>${item.author}</td>
+                <td>${item.publisher}</td>
+                <td>₹${item.price}</td>
+              </tr>
+            `).join('')}
+          </table>
+        `;
+        container.appendChild(orderDiv);
+      });
+    }
+    function goBack() {
+      if (window.history.length > 1) {
+        history.back();
+      } else {
+        window.location.href = 'home.html';
+      }
+    }
+
+    renderOrders();
+  </script>
+</body>
+</html>

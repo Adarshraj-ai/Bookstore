@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BooksWorld - Home</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top, #8b76ff, #3b2f78 45%, #120b2f 100%);
+      color: #f7f7fb;
+      overflow-x: hidden;
+    }
+
+    .navbar-container {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 110px;
+      animation: slideDown 0.9s ease-in-out;
+    }
+    .navbar {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: white;
+      text-decoration: none;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    nav a {
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      font-size: 0.95rem;
+    }
+    nav a:hover {
+      background: rgba(255,255,255,0.28);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    @media (max-width: 768px) {
+      .navbar { flex-direction: column; }
+      nav { width: 100%; justify-content: center; }
+    }
+
+    .hero {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(rgba(10, 11, 28, 0.7), rgba(10, 11, 28, 0.9)), url('library-bg.jpg.jpg');
+      background-size: cover;
+      background-position: center;
+      backdrop-filter: blur(12px);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      line-height: 1.05;
+      margin-bottom: 18px;
+      letter-spacing: -0.04em;
+      text-shadow: 0 12px 50px rgba(0,0,0,0.35);
+    }
+
+    .hero p {
+      max-width: 860px;
+      margin: 0 auto 28px;
+      font-size: 1.1rem;
+      color: #e5e7ff;
+      line-height: 1.75;
+    }
+
+    .search-hero {
+      display: flex;
+      justify-content: center;
+      max-width: 650px;
+      margin: 0 auto;
+      gap: 12px;
+    }
+
+    .search-hero input {
+      flex: 1;
+      padding: 16px 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 1.1rem;
+      outline: none;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .search-hero input::placeholder {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .search-hero input:focus {
+      background: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.5);
+      box-shadow: 0 0 20px rgba(0,188,212,0.3);
+    }
+
+    .search-hero button {
+      padding: 16px 32px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #6c5ce7, #00bcd4);
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .search-hero button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 640px) {
+      .search-hero {
+        flex-direction: column;
+      }
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      padding: 40px 20px;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      backdrop-filter: blur(14px);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+      text-align: center;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255,255,255,0.32);
+    }
+
+    .feature-card h3 {
+      margin-bottom: 12px;
+      font-size: 1.35rem;
+      color: #fefefe;
+    }
+
+    .feature-card p {
+      color: #dce0ff;
+      line-height: 1.7;
+    }
+
+    .featured-books {
+      max-width: 1180px;
+      margin: 0 auto 60px;
+      padding: 0 20px 40px;
+    }
+
+    .featured-books h2 {
+      text-align: center;
+      margin-bottom: 28px;
+      font-size: 2.4rem;
+      color: #f9fbff;
+    }
+
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 22px;
+    }
+
+    .book-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 22px 60px rgba(0,0,0,0.25);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .book-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(0,188,212,0.35);
+    }
+
+    .book-image {
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .book-card-content {
+      padding: 22px;
+      color: white;
+      flex: 1;
+      text-align: center;
+    }
+
+    .book-card-content h4 {
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+
+    .book-card-content p {
+      margin-bottom: 8px;
+      line-height: 1.7;
+      color: #dbe2ff;
+    }
+
+    .book-card-content .price {
+      font-weight: 700;
+      margin-top: auto;
+      color: #a5f3fc;
+    }
+
+    .footer {
+      padding: 30px 20px;
+      background: linear-gradient(rgba(10, 11, 28, 0.85), rgba(10, 11, 28, 0.95)), url('bg1.jpg');
+      background-size: cover;
+      background-position: center;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+      color: #d3d7ff;
+      font-size: 0.98rem;
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        padding: 48px 16px 32px;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+    }
+  
+    .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
+    .modal-content { background: linear-gradient(135deg, #1e293b, #0f172a); margin: 10% auto; padding: 30px; border: 1px solid #334155; border-radius: 20px; width: 90%; max-width: 500px; color: white; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+    .close { position: absolute; right: 20px; top: 15px; color: #94a3b8; font-size: 28px; font-weight: bold; cursor: pointer; }
+    .close:hover { color: white; }
+    .modal-content h2 { margin-bottom: 15px; color: #38bdf8; }
+    .modal-content p { margin-bottom: 10px; font-size: 1.05rem; }
+    .modal-actions { display: flex; gap: 15px; margin-top: 25px; }
+    .btn-cart, .btn-buy { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+    .btn-cart { background: #334155; color: white; }
+    .btn-cart:hover { background: #475569; transform: translateY(-2px); }
+    .btn-buy { background: #0ea5e9; color: white; }
+    .btn-buy:hover { background: #0284c7; transform: translateY(-2px); }
+</style>
+</head>
+<body>
+  <div class="navbar-container">
+    <div class="navbar">
+      <a href="home.html" class="logo">📚 BooksWorld</a>
+      <nav>
+        <a href="shop.html">🛍️ Shop</a>
+        <a href="cart.html">🛒 Cart</a>
+        <a href="orders.html">📦 Orders</a>
+        <a href="profile.html">👤 Profile</a>
+      </nav>
+    </div>
+  </div>
+  <section class="hero">
+    <h1>📚 Welcome to BooksWorld</h1>
+    <p>Discover thousands of books across all genres - from thrilling mysteries to inspiring self-help, heartwarming fiction to educational textbooks. Find your next favorite read!</p>
+        <div class="search-hero">
+      <input type="text" id="homeSearch" placeholder="Search for books, authors, or genres..." onkeypress="handleSearch(event)">
+      <button onclick="performSearch()">🔍 Search</button>
+      <button onclick="window.location.href='shop.html'" style="background: linear-gradient(135deg, #10b981, #059669);">🛍️ Shop All Books</button>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature-card">
+      <h3>📖 Multiple Genres</h3>
+      <p>Fiction, Mystery, Romance, Self-Help, Children's Books, Biography, Science & more - all in one place.</p>
+    </div>
+    <div class="feature-card">
+      <h3>🔍 Smart Search</h3>
+      <p>Find books instantly by title, author, or genre. Filter and sort to discover exactly what you're looking for.</p>
+    </div>
+    <div class="feature-card">
+      <h3>🛒 Easy Checkout</h3>
+      <p>Add to cart, fill in shipping details, and complete your order in just a few clicks.</p>
+    </div>
+    <div class="feature-card">
+      <h3>📦 Track Orders</h3>
+      <p>Keep track of all your purchases, order dates, totals, and shipping information in one place.</p>
+    </div>
+    <div class="feature-card">
+      <h3>👤 Personal Profile</h3>
+      <p>Manage your account, view statistics, and access your complete order history anytime.</p>
+    </div>
+    <div class="feature-card">
+      <h3>⭐ Best Prices</h3>
+      <p>Get competitive pricing on bestsellers, classics, and new releases. Affordable books for everyone!</p>
+    </div>
+  </section>
+
+  <section class="featured-books">
+    <h2>✨ Featured Books - Fiction & Stories</h2>
+    <div class="book-grid">
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('The Midnight Library', 'Matt Haig', 'Penguin', 345, 'A wonderful book titled The Midnight Library.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20The%20Midnight%20Library?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>The Midnight Library</h4>
+          <p>Matt Haig · Penguin</p>
+          <p class="price">₹345</p>
+        </div>
+      </article>
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('Pride and Prejudice', 'Jane Austen', 'Penguin Classics', 299, 'A wonderful book titled Pride and Prejudice.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20Pride%20and%20Prejudice?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>Pride and Prejudice</h4>
+          <p>Jane Austen · Penguin Classics</p>
+          <p class="price">₹299</p>
+        </div>
+      </article>
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('Sherlock Holmes Collection', 'Arthur Conan Doyle', 'Dover', 599, 'A wonderful book titled Sherlock Holmes Collection.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20Sherlock%20Holmes%20Collection?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>Sherlock Holmes Collection</h4>
+          <p>Arthur Conan Doyle · Dover</p>
+          <p class="price">₹599</p>
+        </div>
+      </article>
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('The Great Gatsby', 'F. Scott Fitzgerald', 'Penguin', 285, 'A wonderful book titled The Great Gatsby.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20The%20Great%20Gatsby?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>The Great Gatsby</h4>
+          <p>F. Scott Fitzgerald · Penguin</p>
+          <p class="price">₹285</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="featured-books">
+    <h2>🚀 Self-Help & Personal Development</h2>
+    <div class="book-grid">
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('Atomic Habits', 'James Clear', 'Penguin', 449, 'A wonderful book titled Atomic Habits.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20Atomic%20Habits?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>Atomic Habits</h4>
+          <p>James Clear · Penguin</p>
+          <p class="price">₹449</p>
+        </div>
+      </article>
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('The 7 Habits of Highly Effective People', 'Stephen Covey', 'Free Press', 525, 'A wonderful book titled The 7 Habits of Highly Effective People.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20The%207%20Habits%20of%20Highly%20Effective%20People?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>The 7 Habits of Highly Effective People</h4>
+          <p>Stephen Covey · Free Press</p>
+          <p class="price">₹525</p>
+        </div>
+      </article>
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('Think and Grow Rich', 'Napoleon Hill', 'Fingerprint', 399, 'A wonderful book titled Think and Grow Rich.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20Think%20and%20Grow%20Rich?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>Think and Grow Rich</h4>
+          <p>Napoleon Hill · Fingerprint</p>
+          <p class="price">₹399</p>
+        </div>
+      </article>
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('The Power of Now', 'Eckhart Tolle', 'Hodder', 475, 'A wonderful book titled The Power of Now.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20The%20Power%20of%20Now?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>The Power of Now</h4>
+          <p>Eckhart Tolle · Hodder</p>
+          <p class="price">₹475</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="featured-books">
+    <h2>👶 Children's & Young Adult Books</h2>
+    <div class="book-grid">
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('Harry Potter Series', 'J.K. Rowling', 'Bloomsbury', 550, 'A wonderful book titled Harry Potter Series.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20Harry%20Potter%20Series?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>Harry Potter Series</h4>
+          <p>J.K. Rowling · Bloomsbury</p>
+          <p class="price">₹550</p>
+        </div>
+      </article>
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('Percy Jackson & The Olympians', 'Rick Riordan', 'Puffin', 425, 'A wonderful book titled Percy Jackson & The Olympians.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20Percy%20Jackson%20%26%20The%20Olympians?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>Percy Jackson & The Olympians</h4>
+          <p>Rick Riordan · Puffin</p>
+          <p class="price">₹425</p>
+        </div>
+      </article>
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('Wings of Fire Series', 'Tui T. Sutherland', 'Scholastic', 380, 'A wonderful book titled Wings of Fire Series.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20Wings%20of%20Fire%20Series?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>Wings of Fire Series</h4>
+          <p>Tui T. Sutherland · Scholastic</p>
+          <p class="price">₹380</p>
+        </div>
+      </article>
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('The Hobbit', 'J.R.R. Tolkien', 'HarperCollins', 495, 'A wonderful book titled The Hobbit.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20The%20Hobbit?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>The Hobbit</h4>
+          <p>J.R.R. Tolkien · HarperCollins</p>
+          <p class="price">₹495</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="featured-books">
+    <h2>📚 Educational & Technical Books</h2>
+    <div class="book-grid">
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('Artificial Intelligence: A Modern Approach', 'Russell & Norvig', 'Pearson', 799, 'A wonderful book titled Artificial Intelligence: A Modern Approach.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20Artificial%20Intelligence%3A%20A%20Modern%20Approach?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>Artificial Intelligence: A Modern Approach</h4>
+          <p>Russell & Norvig · Pearson</p>
+          <p class="price">₹799</p>
+        </div>
+      </article>
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('Introduction to Algorithms', 'Cormen, Leiserson & Rivest', 'MIT', 850, 'A wonderful book titled Introduction to Algorithms.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20Introduction%20to%20Algorithms?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>Introduction to Algorithms</h4>
+          <p>Cormen, Leiserson & Rivest · MIT</p>
+          <p class="price">₹850</p>
+        </div>
+      </article>
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('The Complete Web Developer', 'Andrew Mead', 'Udemy', 595, 'A wonderful book titled The Complete Web Developer.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20The%20Complete%20Web%20Developer?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>The Complete Web Developer</h4>
+          <p>Andrew Mead · Udemy</p>
+          <p class="price">₹595</p>
+        </div>
+      </article>
+      <article class="book-card" style="cursor: pointer;" onclick="openModal('Data Science Handbook', 'Jake VanderPlas', 'O\'Reilly', 725, 'A wonderful book titled Data Science Handbook.')">
+        <div class="book-image" style="background-image: url('https://image.pollinations.ai/prompt/book%20cover%20for%20Data%20Science%20Handbook?width=300&height=400&nologo=true')"></div>
+        <div class="book-card-content">
+          <h4>Data Science Handbook</h4>
+          <p>Jake VanderPlas · O'Reilly</p>
+          <p class="price">₹725</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="footer">
+    &copy; 2026 BooksWorld. Your trusted online bookstore for all genres and readers. 📖✨
+  </div>
+
+
+  <div id="bookModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle">Book Title</h2>
+      <p><strong>Author:</strong> <span id="modalAuthor"></span></p>
+      <p><strong>Publisher:</strong> <span id="modalPublisher"></span></p>
+      <p><strong>Price:</strong> ₹<span id="modalPrice"></span></p>
+      <p><strong>Details:</strong> <span id="modalDetails"></span></p>
+      <div class="modal-actions">
+        <button class="btn-cart" onclick="addModalToCart()">Add to Cart</button>
+        <button class="btn-buy" onclick="buyNowModal()">Buy Now</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function handleSearch(event) {
+      if (event.key === 'Enter') {
+        performSearch();
+      }
+    }
+
+    function performSearch() {
+      const query = document.getElementById('homeSearch').value.trim();
+      if (query) {
+        window.location.href = `shop.html?search=${encodeURIComponent(query)}`;
+      } else {
+        window.location.href = 'shop.html';
+      }
+    }
+  
+    let currentModalBook = null;
+    function openModal(title, author, publisher, price, details) {
+      currentModalBook = { title, author, publisher, price, details };
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalAuthor').innerText = author;
+      document.getElementById('modalPublisher').innerText = publisher;
+      document.getElementById('modalPrice').innerText = price;
+      document.getElementById('modalDetails').innerText = details;
+      document.getElementById('bookModal').style.display = 'block';
+    }
+    function closeModal() {
+      document.getElementById('bookModal').style.display = 'none';
+    }
+    function addModalToCart() {
+      if (currentModalBook) {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        cart.push(currentModalBook);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert(`✅ "${currentModalBook.title}" added to your cart!`);
+        closeModal();
+      }
+    }
+    function buyNowModal() {
+      if (currentModalBook) {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        cart.push(currentModalBook);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        localStorage.setItem('checkoutItems', JSON.stringify([currentModalBook]));
+        window.location.href = 'checkout.html';
+      }
+    }
+    window.onclick = function(event) {
+      if (event.target == document.getElementById('bookModal')) {
+        closeModal();
+      }
+    }
+
+  </script>
+</body>
+</html>

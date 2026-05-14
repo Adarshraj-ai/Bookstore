@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BooksWorld Checkout</title>
+  <style>
+    body { margin: 0; min-height: 100vh; background: radial-gradient(circle at top, #081e3b, #0b1931 45%, #020613 100%); color: #eef2ff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .navbar-container {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 110px;
+    }
+    .navbar {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: white;
+      text-decoration: none;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    nav a {
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      font-size: 0.95rem;
+    }
+    nav a:hover {
+      background: rgba(255,255,255,0.28);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    @media (max-width: 768px) {
+      .navbar { flex-direction: column; }
+      nav { width: 100%; justify-content: center; }
+    }
+    .back-button { position: absolute; top: 110px; left: 20px; background: linear-gradient(135deg, #38bdf8, #4f46e5); color: white; border: none; border-radius: 999px; padding: 10px 20px; cursor: pointer; font-weight: 700; transition: transform 0.2s ease, box-shadow 0.2s ease; z-index: 50; font-size: 0.9rem; }
+    .back-button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3); }
+    .page { position: relative; min-height: 100vh; padding: 24px; }
+    h2 { text-align: center; margin-bottom: 14px; font-size: 2.4rem; color: #f0f9ff; }
+    .checkout-grid { display: grid; grid-template-columns: 1.3fr 0.9fr; gap: 24px; align-items: start; }
+    .section-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 26px; padding: 26px; box-shadow: 0 22px 60px rgba(0,0,0,0.24); }
+    .section-card h3 { margin-top: 0; color: #eef2ff; }
+    .order-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .order-table th, .order-table td { padding: 14px; border-bottom: 1px solid rgba(255,255,255,0.12); color: #dbeafe; text-align: left; }
+    .order-table th { background: rgba(56,189,248,0.18); color: #eff6ff; }
+    .total { margin-top: 18px; font-size: 1.2rem; font-weight: 700; color: #a5f3fc; text-align: right; }
+    .checkout-form { display: grid; gap: 14px; margin-top: 18px; }
+    .checkout-form input, .checkout-form select { width: 100%; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); color: #eef2ff; outline: none; }
+    .checkout-form button { border: none; border-radius: 999px; padding: 16px 24px; background: linear-gradient(135deg, #38bdf8, #2563eb); color: #07122a; font-weight: 700; cursor: pointer; transition: transform 0.2s ease; }
+    .checkout-form button:hover { transform: translateY(-2px); }
+    .empty { text-align: center; color: #cbd5e1; margin-top: 28px; }
+    @media (max-width: 900px) { .checkout-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="navbar-container">
+    <div class="navbar">
+      <a href="home.html" class="logo">📚 BooksWorld</a>
+      <nav>
+        <a href="shop.html">🛍️ Shop</a>
+        <a href="cart.html">🛒 Cart</a>
+        <a href="orders.html">📦 Orders</a>
+        <a href="profile.html">👤 Profile</a>
+      </nav>
+    </div>
+  </div>
+  <button class="back-button" onclick="goBack()">← Back</button>
+  <div class="page">
+    <h2>Checkout</h2>
+    <div class="checkout-grid">
+      <div class="section-card">
+        <h3>Order Summary</h3>
+        <div id="checkoutContainer"></div>
+        <div id="checkoutTotal" class="total"></div>
+      </div>
+      <div class="section-card">
+        <h3>Shipping & Payment</h3>
+        <div class="checkout-form">
+          <input type="text" id="name" placeholder="Full Name" required>
+          <input type="text" id="address" placeholder="Address" required>
+          <input type="text" id="city" placeholder="City" required>
+          <input type="text" id="zip" placeholder="ZIP Code" required>
+          <select id="payment">
+            <option value="Credit Card">Credit Card</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Cash on Delivery">Cash on Delivery</option>
+          </select>
+          <button onclick="placeOrder()">Place Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function renderCheckout() {
+      const cart = JSON.parse(localStorage.getItem('checkoutItems') || localStorage.getItem('cart') || '[]');
+      const container = document.getElementById('checkoutContainer');
+      const totalDiv = document.getElementById('checkoutTotal');
+      if (cart.length === 0) {
+        container.innerHTML = `<p class='empty'>Your cart is empty. <a style='color:#7dd3fc;text-decoration:none;' href='home.html'>Go to Home</a></p>`;
+        totalDiv.textContent = '';
+        return;
+      }
+      const table = document.createElement('table');
+      table.className = 'order-table';
+      table.innerHTML = `
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Publisher</th>
+          <th>Price (₹)</th>
+        </tr>
+      `;
+      let total = 0;
+      cart.forEach(book => {
+        total += Number(book.price);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${book.title}</td>
+          <td>${book.author}</td>
+          <td>${book.publisher}</td>
+          <td>₹${book.price}</td>
+        `;
+        table.appendChild(row);
+      });
+      container.innerHTML = '';
+      container.appendChild(table);
+      totalDiv.textContent = 'Total Price: ₹' + total.toFixed(2);
+    }
+    function placeOrder() {
+      const name = document.getElementById('name').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const zip = document.getElementById('zip').value.trim();
+      const payment = document.getElementById('payment').value;
+      if (!name || !address || !city || !zip) { alert('Please fill all shipping details!'); return; }
+      const checkoutItems = JSON.parse(localStorage.getItem('checkoutItems') || localStorage.getItem('cart') || '[]');
+      if (!checkoutItems.length) { alert('Your checkout is empty!'); return; }
+      const order = { id: Date.now(), date: new Date().toLocaleString(), items: checkoutItems, total: checkoutItems.reduce((sum, book) => sum + Number(book.price), 0), shipping: { name, address, city, zip }, payment };
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      orders.push(order);
+      localStorage.setItem('orders', JSON.stringify(orders));
+      
+      // Remove checked out items from cart
+      let currentCart = JSON.parse(localStorage.getItem('cart') || '[]');
+      checkoutItems.forEach(checkedItem => {
+        const index = currentCart.findIndex(c => c.title === checkedItem.title && c.price === checkedItem.price);
+        if (index > -1) currentCart.splice(index, 1);
+      });
+      localStorage.setItem('cart', JSON.stringify(currentCart));
+      localStorage.removeItem('checkoutItems');
+      
+      alert('Order placed successfully!');
+      window.location.href = 'orders.html';
+    }
+    function goBack() {
+      if (window.history.length > 1) {
+        history.back();
+      } else {
+        window.location.href = 'home.html';
+      }
+    }
+
+    renderCheckout();
+  </script>
+</body>
+</html>

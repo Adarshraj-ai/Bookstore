@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BooksWorld - Shop</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { min-height: 100vh; display: flex; flex-direction: column; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: radial-gradient(circle at top left, #0b1736, #102d5c 55%, #0b1729 100%); color: #eef2ff; }
+    body::before { content: ""; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top, rgba(95, 129, 242, 0.22), transparent 38%), rgba(0,0,0,0.55); z-index: -1; }
+    
+    .navbar-container { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 8px 32px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 1000; }
+    .navbar { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; flex-wrap: wrap; gap: 15px; }
+    .logo { font-size: 28px; font-weight: 800; color: white; text-decoration: none; text-shadow: 0 2px 4px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; }
+    nav { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    nav a { text-decoration: none; color: white; font-weight: 600; padding: 10px 18px; border-radius: 20px; transition: all 0.3s ease; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); font-size: 0.95rem; }
+    nav a:hover { background: rgba(255,255,255,0.28); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+    
+    .main-layout { display: flex; flex: 1; max-width: 1600px; margin: 0 auto; width: 100%; }
+    
+    .sidebar { width: 260px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border-right: 1px solid rgba(255,255,255,0.1); padding: 24px; display: flex; flex-direction: column; gap: 10px; height: calc(100vh - 70px); position: sticky; top: 70px; overflow-y: auto; }
+    .sidebar h2 { font-size: 1.3rem; margin-bottom: 12px; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; }
+    .cat-btn { background: transparent; color: #cbd5e1; border: 1px solid transparent; border-radius: 12px; padding: 12px 16px; font-size: 1rem; cursor: pointer; text-align: left; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+    .cat-btn:hover, .cat-btn.active { background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.4); color: white; transform: translateX(5px); }
+    
+    .content { flex: 1; padding: 32px; overflow-y: auto; }
+    
+    .search-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px; }
+    .search-header h1 { font-size: 2.2rem; color: white; }
+    .search-box { display: flex; width: 100%; max-width: 400px; position: relative; }
+    .search-box input { width: 100%; padding: 14px 20px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; font-size: 1rem; outline: none; transition: border-color 0.3s; }
+    .search-box input:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56,189,248,0.2); }
+    
+    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; }
+    
+    .book-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; }
+    .book-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); border-color: rgba(56,189,248,0.5); }
+    .book-img { height: 260px; background-size: cover; background-position: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .book-info { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+    .book-title { font-size: 1.2rem; color: white; margin-bottom: 6px; font-weight: 700; }
+    .book-author { color: #94a3b8; font-size: 0.9rem; margin-bottom: 12px; }
+    .book-price { font-size: 1.3rem; color: #34d399; font-weight: 800; margin-top: auto; margin-bottom: 16px; }
+    
+    .book-actions { display: flex; gap: 10px; }
+    .btn { flex: 1; padding: 10px 0; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
+    .btn-cart { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
+    .btn-cart:hover { background: rgba(255,255,255,0.2); }
+    .btn-buy { background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: white; }
+    .btn-buy:hover { box-shadow: 0 4px 15px rgba(14,165,233,0.4); filter: brightness(1.1); }
+    
+    .empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #94a3b8; font-size: 1.2rem; }
+    
+    @media (max-width: 900px) {
+      .main-layout { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; justify-content: center; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar-container">
+    <div class="navbar">
+      <a href="home.html" class="logo">📚 BooksWorld</a>
+      <nav>
+        <a href="shop.html">🛍️ Shop</a>
+        <a href="cart.html">🛒 Cart</a>
+        <a href="orders.html">📦 Orders</a>
+        <a href="profile.html">👤 Profile</a>
+      </nav>
+    </div>
+  </div>
+  
+  <div class="main-layout">
+    <div class="sidebar" id="categorySidebar">
+      <h2>Categories</h2>
+      <!-- Categories injected by JS -->
+    </div>
+    
+    <div class="content">
+      <div class="search-header">
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <button onclick="window.location.href='home.html'" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 8px; cursor: pointer;">← Back</button>
+          <h1 id="pageTitle">Shop All Books</h1>
+        </div>
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search by title or author..." onkeyup="handleSearch()">
+        </div>
+      </div>
+      
+      <div class="book-grid" id="bookGrid">
+        <!-- Books injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const db = {
+      Fiction: [
+        { id: 'f1', title: "The Great Gatsby", author: "F. Scott Fitzgerald", publisher: "Penguin", price: 285 },
+        { id: 'f2', title: "The Midnight Library", author: "Matt Haig", publisher: "Penguin", price: 345 },
+        { id: 'f3', title: "Pride and Prejudice", author: "Jane Austen", publisher: "Penguin Classics", price: 299 },
+        { id: 'f4', title: "The Catcher in the Rye", author: "J.D. Salinger", publisher: "Back Bay Books", price: 315 }
+      ],
+      Mystery: [
+        { id: 'm1', title: "Sherlock Holmes", author: "Arthur Conan Doyle", publisher: "Dover", price: 599 },
+        { id: 'm2', title: "The Girl with the Dragon Tattoo", author: "Stieg Larsson", publisher: "Penguin", price: 445 },
+        { id: 'm3', title: "Murder on the Orient Express", author: "Agatha Christie", publisher: "Penguin", price: 295 },
+        { id: 'm4', title: "The Da Vinci Code", author: "Dan Brown", publisher: "Doubleday", price: 385 }
+      ],
+      Romance: [
+        { id: 'r1', title: "The Notebook", author: "Nicholas Sparks", publisher: "Grand Central", price: 315 },
+        { id: 'r2', title: "Me Before You", author: "Jojo Moyes", publisher: "Penguin", price: 365 },
+        { id: 'r3', title: "Outlander", author: "Diana Gabaldon", publisher: "Delacorte", price: 495 }
+      ],
+      Fantasy: [
+        { id: 'fn1', title: "The Name of the Wind", author: "Patrick Rothfuss", publisher: "DAW Books", price: 599 },
+        { id: 'fn2', title: "A Game of Thrones", author: "George R.R. Martin", publisher: "Bantam", price: 499 },
+        { id: 'fn3', title: "Mistborn", author: "Brandon Sanderson", publisher: "Tor Books", price: 450 }
+      ],
+      SciFi: [
+        { id: 'sf1', title: "Dune", author: "Frank Herbert", publisher: "Chilton Books", price: 550 },
+        { id: 'sf2', title: "Foundation", author: "Isaac Asimov", publisher: "Gnome Press", price: 399 },
+        { id: 'sf3', title: "The Martian", author: "Andy Weir", publisher: "Crown", price: 420 }
+      ],
+      SelfHelp: [
+        { id: 'sh1', title: "Atomic Habits", author: "James Clear", publisher: "Penguin", price: 449 },
+        { id: 'sh2', title: "Think and Grow Rich", author: "Napoleon Hill", publisher: "Fingerprint", price: 399 }
+      ],
+      History: [
+        { id: 'h1', title: "Sapiens", author: "Yuval Noah Harari", publisher: "Harper", price: 555 },
+        { id: 'h2', title: "Guns, Germs, and Steel", author: "Jared Diamond", publisher: "Norton", price: 480 }
+      ],
+      Business: [
+        { id: 'b1', title: "Good to Great", author: "Jim Collins", publisher: "HarperBusiness", price: 520 },
+        { id: 'b2', title: "Zero to One", author: "Peter Thiel", publisher: "Crown Business", price: 450 }
+      ],
+      Cooking: [
+        { id: 'c1', title: "Salt, Fat, Acid, Heat", author: "Samin Nosrat", publisher: "Simon & Schuster", price: 650 },
+        { id: 'c2', title: "The Joy of Cooking", author: "Irma S. Rombauer", publisher: "Scribner", price: 799 }
+      ],
+      Art: [
+        { id: 'a1', title: "The Story of Art", author: "E.H. Gombrich", publisher: "Phaidon", price: 899 },
+        { id: 'a2', title: "Ways of Seeing", author: "John Berger", publisher: "Penguin", price: 350 }
+      ],
+      Travel: [
+        { id: 't1', title: "Vagabonding", author: "Rolf Potts", publisher: "Villard", price: 340 },
+        { id: 't2', title: "In a Sunburned Country", author: "Bill Bryson", publisher: "Broadway", price: 399 }
+      ],
+      Poetry: [
+        { id: 'p1', title: "Milk and Honey", author: "Rupi Kaur", publisher: "Andrews McMeel", price: 299 },
+        { id: 'p2', title: "The Sun and Her Flowers", author: "Rupi Kaur", publisher: "Andrews McMeel", price: 310 }
+      ],
+      Children: [
+        { id: 'ch1', title: "Harry Potter", author: "J.K. Rowling", publisher: "Bloomsbury", price: 550 },
+        { id: 'ch2', title: "Percy Jackson", author: "Rick Riordan", publisher: "Puffin", price: 425 }
+      ],
+      Science: [
+        { id: 'sc1', title: "A Brief History of Time", author: "Stephen Hawking", publisher: "Bantam", price: 395 },
+        { id: 'sc2', title: "The Selfish Gene", author: "Richard Dawkins", publisher: "Oxford", price: 425 }
+      ],
+      Education: [
+        { id: 'e1', title: "Introduction to Algorithms", author: "Cormen et al.", publisher: "MIT Press", price: 850 },
+        { id: 'e2', title: "Artificial Intelligence", author: "Russell & Norvig", publisher: "Pearson", price: 799 }
+      ]
+    };
+
+    const categories = {
+      'All': { icon: '🌐', name: 'All Books' },
+      'Fiction': { icon: '📚', name: 'Fiction' },
+      'Fantasy': { icon: '🐉', name: 'Fantasy' },
+      'SciFi': { icon: '🚀', name: 'Sci-Fi' },
+      'Mystery': { icon: '🕵️‍♂️', name: 'Mystery & Thriller' },
+      'Romance': { icon: '💘', name: 'Romance' },
+      'History': { icon: '🏛️', name: 'History' },
+      'Business': { icon: '💼', name: 'Business' },
+      'SelfHelp': { icon: '🧠', name: 'Self-Help' },
+      'Cooking': { icon: '🍳', name: 'Cooking' },
+      'Art': { icon: '🎨', name: 'Art & Design' },
+      'Travel': { icon: '✈️', name: 'Travel' },
+      'Poetry': { icon: '✒️', name: 'Poetry' },
+      'Children': { icon: '🧒', name: 'Children' },
+      'Science': { icon: '🔬', name: 'Science' },
+      'Education': { icon: '🎓', name: 'Education' }
+    };
+
+    let currentCategory = 'All';
+
+    function init() {
+      renderSidebar();
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchParam = urlParams.get('search');
+      if (searchParam) {
+        document.getElementById('searchInput').value = searchParam;
+        renderBooks('All', searchParam);
+      } else {
+        renderBooks('All');
+      }
+    }
+
+    function renderSidebar() {
+      const sb = document.getElementById('categorySidebar');
+      sb.innerHTML = '<h2>Categories</h2>';
+      for (const [key, val] of Object.entries(categories)) {
+        const btn = document.createElement('button');
+        btn.className = 'cat-btn' + (key === currentCategory ? ' active' : '');
+        btn.innerHTML = `${val.icon} ${val.name}`;
+        btn.onclick = () => {
+          document.getElementById('searchInput').value = '';
+          renderBooks(key);
+        };
+        sb.appendChild(btn);
+      }
+    }
+
+    function renderBooks(category, filter = '') {
+      currentCategory = category;
+      renderSidebar(); // refresh active state
+      
+      let books = [];
+      if (category === 'All') {
+        for (const cat in db) books = books.concat(db[cat]);
+      } else {
+        books = db[category] || [];
+      }
+      
+      if (filter) {
+        const f = filter.toLowerCase();
+        books = books.filter(b => b.title.toLowerCase().includes(f) || b.author.toLowerCase().includes(f));
+        document.getElementById('pageTitle').innerText = `Search Results: "${filter}"`;
+      } else {
+        document.getElementById('pageTitle').innerText = categories[category].name;
+      }
+      
+      const grid = document.getElementById('bookGrid');
+      grid.innerHTML = '';
+      
+      if (books.length === 0) {
+        grid.innerHTML = '<div class="empty-state">No books found matching your criteria.</div>';
+        return;
+      }
+      
+      // Use pollinations.ai to generate book-specific covers
+      books.forEach(b => {
+        const imgUrl = `https://image.pollinations.ai/prompt/book%20cover%20for%20${encodeURIComponent(b.title)}?width=300&height=400&nologo=true`;
+        const card = document.createElement('div');
+        card.className = 'book-card';
+        card.innerHTML = `
+          <div class="book-img" style="background-image: url('${imgUrl}')"></div>
+          <div class="book-info">
+            <div class="book-title">${b.title}</div>
+            <div class="book-author">${b.author}</div>
+            <div class="book-price">₹${b.price}</div>
+            <div class="book-actions">
+              <button class="btn btn-cart" onclick='addToCart(${JSON.stringify(b).replace(/'/g, "&#39;")})'>Add to Cart</button>
+              <button class="btn btn-buy" onclick='buyNow(${JSON.stringify(b).replace(/'/g, "&#39;")})'>Buy Now</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      renderBooks('All', query);
+    }
+
+    function addToCart(book) {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      cart.push(book);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert(`✅ "${book.title}" added to your cart!`);
+    }
+
+    function buyNow(book) {
+      addToCart(book);
+      localStorage.setItem('checkoutItems', JSON.stringify([book]));
+      window.location.href = 'checkout.html';
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      background-color: #f0f4f8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .dept-card {
+      background: #ffffff;
+      width: 200px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .dept-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      background: #e6f0ff;
+    }
+
+    .dept-card a {
+      text-decoration: none;
+      color: #2c3e50;
+      font-size: 18px;
+      font-weight: bold;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dept-card" onclick="sendDept('CSE')">
+    <a>CSE</a>
+  </div>
+
+  <div class="dept-card" onclick="sendDept('ECE')">
+    <a>ECE</a>
+  </div>
+
+  <div class="dept-card" onclick="sendDept('EEE')">
+    <a>EEE</a>
+  </div>
+
+  <div class="dept-card" onclick="sendDept('CIVIL')">
+    <a>CIVIL</a>
+  </div>
+
+  <script>
+    function sendDept(dept) {
+      const rightFrame = parent.frames['rightFrame'];
+      rightFrame.postMessage({ department: dept }, '*');
+    }
+  </script>
+</body>
+</html>

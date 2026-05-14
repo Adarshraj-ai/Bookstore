@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BooksWorld Cart</title>
+  <style>
+    body { margin: 0; min-height: 100vh; background: radial-gradient(circle at top, #081e3b, #0b1931 45%, #020613 100%); color: #eef2ff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .navbar-container {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 110px;
+    }
+    .navbar {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: white;
+      text-decoration: none;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    nav a {
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      font-size: 0.95rem;
+    }
+    nav a:hover {
+      background: rgba(255,255,255,0.28);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    @media (max-width: 768px) {
+      .navbar { flex-direction: column; }
+      nav { width: 100%; justify-content: center; }
+    }
+    .back-button { position: absolute; top: 110px; left: 20px; background: linear-gradient(135deg, #38bdf8, #4f46e5); color: white; border: none; border-radius: 999px; padding: 10px 20px; cursor: pointer; font-weight: 700; transition: transform 0.2s ease, box-shadow 0.2s ease; z-index: 50; font-size: 0.9rem; }
+    .back-button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3); }
+    .page-wrapper { position: relative; }
+    h2 { text-align: center; margin-bottom: 18px; font-size: 2.4rem; color: #ffffff; }
+    .card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); border-radius: 24px; padding: 24px; box-shadow: 0 24px 60px rgba(0,0,0,0.25); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; }
+    th, td { padding: 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.12); color: #e9edf8; }
+    th { color: #a6c8ff; font-weight: 700; }
+    tr:hover { background: rgba(255,255,255,0.06); }
+    .empty { text-align: center; margin: 40px 0; font-size: 1.1rem; color: #d3d8ff; }
+    .actions { display: flex; justify-content: space-between; flex-wrap: wrap; align-items: center; margin-top: 18px; gap: 14px; }
+    .total { font-size: 1.23rem; font-weight: 700; color: #7ee6ff; }
+    .btn-primary, .btn-secondary { border: none; border-radius: 999px; padding: 14px 26px; cursor: pointer; font-weight: 700; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .btn-primary { background: #12b0ff; color: #031627; }
+    .btn-secondary { background: rgba(255,255,255,0.12); color: #f7f7fb; }
+    .btn-primary:hover, .btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 18px 30px rgba(0,0,0,0.22); }
+    .remove-button { background: #ff6b6b; color: white; border-radius: 14px; padding: 10px 16px; }
+    .remove-button:hover { background: #ff4e4e; }
+    @media (max-width: 700px) { .actions { flex-direction: column; align-items: stretch; } }
+  </style>
+</head>
+<body>
+  <div class="navbar-container">
+    <div class="navbar">
+      <a href="home.html" class="logo">📚 BooksWorld</a>
+      <nav>
+        <a href="shop.html">🛍️ Shop</a>
+        <a href="cart.html">🛒 Cart</a>
+        <a href="orders.html">📦 Orders</a>
+        <a href="profile.html">👤 Profile</a>
+      </nav>
+    </div>
+  </div>
+  <button class="back-button" onclick="goBack()">← Back</button>
+  <div class="page-wrapper">
+    <h2>Your Shopping Cart</h2>
+    <div class="card">
+      <div id="cartContainer"></div>
+      <div class="actions">
+        <div id="cartTotal" class="total"></div>
+        <div>
+          <button onclick="window.location.href='home.html'" class="btn-secondary">Go to Home</button>
+          <button id="checkoutButton" onclick="buyAllBooks()" class="btn-primary">Proceed to Checkout</button>
+          <button id="buyNowButton" onclick="buyAllBooks()" class="btn-primary" style="margin-left: 8px; background: #0ea5e9; color: white;">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function renderCart() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const container = document.getElementById('cartContainer');
+      const totalDiv = document.getElementById('cartTotal');
+      const checkoutButton = document.getElementById('checkoutButton');
+      const buyNowButton = document.getElementById('buyNowButton');
+      if (cart.length === 0) {
+        container.innerHTML = `<p class='empty'>Your cart is empty. Add books from the catalogue to continue.</p>`;
+        totalDiv.textContent = '';
+        checkoutButton.disabled = true;
+        checkoutButton.style.opacity = '0.6';
+        checkoutButton.style.cursor = 'not-allowed';
+        buyNowButton.disabled = true;
+        buyNowButton.style.opacity = '0.6';
+        buyNowButton.style.cursor = 'not-allowed';
+        return;
+      }
+      const table = document.createElement('table');
+      table.innerHTML = `
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Publisher</th>
+          <th>Price (₹)</th>
+          <th>Actions</th>
+        </tr>
+      `;
+      let total = 0;
+      cart.forEach((book, index) => {
+        total += Number(book.price);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${book.title}</td>
+          <td>${book.author}</td>
+          <td>${book.publisher}</td>
+          <td>₹${book.price}</td>
+          <td>
+            <button class='remove-button'>Remove</button>
+            <button class='buy-button' style='margin-left: 5px; background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;' onclick='buySingleBook(${index})'>Buy</button>
+          </td>
+        `;
+        row.querySelector('.remove-button').addEventListener('click', () => removeFromCart(index));
+        table.appendChild(row);
+      });
+      container.innerHTML = '';
+      container.appendChild(table);
+      totalDiv.textContent = 'Subtotal: ₹' + total.toFixed(2);
+      checkoutButton.disabled = false;
+      checkoutButton.style.opacity = '1';
+      checkoutButton.style.cursor = 'pointer';
+      buyNowButton.disabled = false;
+      buyNowButton.style.opacity = '1';
+      buyNowButton.style.cursor = 'pointer';
+    }
+    function removeFromCart(index) {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart();
+    }
+    function goBack() {
+      if (window.history.length > 1) {
+        history.back();
+      } else {
+        window.location.href = 'home.html';
+      }
+    }
+    
+    function buySingleBook(index) {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      localStorage.setItem('checkoutItems', JSON.stringify([cart[index]]));
+      window.location.href = 'checkout.html';
+    }
+    
+    function buyAllBooks() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      localStorage.setItem('checkoutItems', JSON.stringify(cart));
+      window.location.href = 'checkout.html';
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>
