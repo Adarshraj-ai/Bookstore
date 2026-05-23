@@ -11,7 +11,7 @@
 ![Status](https://img.shields.io/badge/Status-Live-brightgreen?style=flat-square)
 ![Deployment](https://img.shields.io/badge/Deployed%20on-GitHub%20Pages-181717?style=flat-square&logo=github)
 
-**[🌐 View Live Demo](https://adarshraj-ai.github.io/booksworld-website)**
+**[🌐 View Live Demo]( https://adarshraj-ai.github.io/Bookstore/)**
 
 </div>
 
